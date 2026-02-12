@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #ff9acb, #ff4d88, #c9184a);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Estrellas */
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.3; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Corazones flotantes */
+    .heart {
+      position: absolute;
+      color: #ff2d55;
+      font-size: 20px;
+      opacity: 0.8;
+      animation: floatUp 6s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(100vh) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      to { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+    }
+
+    /* Corazones explosión */
+    .burst-heart {
+      position: absolute;
+      color: #ff2d55;
+      font-size: 18px;
+      pointer-events: none;
+      animation: burst 1.2s ease-out forwards;
+    }
+
+    @keyframes burst {
+      from { transform: scale(0.5); opacity: 1; }
+      to { transform: translate(var(--x), var(--y)) scale(1.4); opacity: 0; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      padding: 50px 60px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      animation: fadeIn 1.5s ease;
+      position: relative;
+      z-index: 2;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      font-size: 2.6rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #fff, #ffd6e0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    #specialMessage {
+      font-size: 1.3rem;
+      margin-top: 20px;
+      display: none;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      position: relative;
+    }
+
+    button {
+      padding: 14px 34px;
+      border: none;
+      border-radius: 40px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      font-weight: 600;
+    }
+
+    /* Tooltip */
+    button::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(233, 30, 99, 0.9);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 0.8rem;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    button:hover::after {
+      opacity: 1;
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, #ff5f9e, #ff2d55);
+      color: white;
+      box-shadow: 0 8px 25px rgba(233, 30, 99, 0.45);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    #yesBtn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(233, 30, 99, 0.6);
+    }
+
+    #noBtn {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      backdrop-filter: blur(5px);
+    }
+
+    #noBtn:hover {
+      background: rgba(255, 255, 255, 0.5);
+      transform: translateY(-4px);
+    }
+
+    #arrowHeart {
+      margin-top: 15px;
+      font-size: 3rem;
+      display: none;
+      animation: popIn 1s ease forwards;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Estrellas -->
+  <script>
+    const numStars = 120;
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = Math.random() * 100 + 'vh';
+      star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      document.body.appendChild(star);
+    }
+
+    // Corazones flotantes
+    function createHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+        heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 7000);
+      }, 400);
+    }
+
+    createHearts();
+  </script>
+
+  <div class="container">
+    <h1>💘 Be My Valentine 💘</h1>
+    <p>¿Quieres ser mi Valentín, mi resentida? 💖</p>
+
+    <div class="buttons">
+      <button id="yesBtn" data-tooltip="Haz clic si eres mi groserita necia 💕">Sí 💖</button>
+      <button id="noBtn" data-tooltip="Este botón no quiere que lo presiones 😅">No 💔</button>
+    </div>
+
+    <div id="specialMessage">💘 Te amo mucho q cada canción de la playlist me recuerda a ti 💘</div>
+    <div id="arrowHeart">💘</div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const arrowHeart = document.getElementById('arrowHeart');
+    const specialMessage = document.getElementById('specialMessage');
+
+    // Mover el botón "No" al pasar el mouse
+    noBtn.addEventListener('mouseover', () => {
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    });
+
+    // Explosión de corazones
+    function burstHearts() {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      for (let i = 0; i < 30; i++) {
+        const burst = document.createElement('div');
+        burst.classList.add('burst-heart');
+        burst.innerHTML = '❤️';
+        burst.style.left = centerX + 'px';
+        burst.style.top = centerY + 'px';
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 150 + 50;
+        const x = Math.cos(angle) * distance + 'px';
+        const y = Math.sin(angle) * distance + 'px';
+
+        burst.style.setProperty('--x', x);
+        burst.style.setProperty('--y', y);
+
+        document.body.appendChild(burst);
+
+        setTimeout(() => {
+          burst.remove();
+        }, 1200);
+      }
+    }
+
+    // Acción al presionar "Sí"
+    yesBtn.addEventListener('click', () => {
+      arrowHeart.style.display = 'block';
+      specialMessage.style.display = 'block';
+      burstHearts();
+
+      setTimeout(() => {
+        window.open("https://open.spotify.com/playlist/4npFGekn9iRozaGo0riNi8?si=191400fbfb9148a9", "_blank");
+      }, 2000);
+    });
+  </script>
+
+</body>
+</html>
